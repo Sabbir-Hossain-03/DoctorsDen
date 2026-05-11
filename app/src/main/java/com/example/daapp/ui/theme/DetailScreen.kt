@@ -43,7 +43,7 @@ import com.example.daapp.model.DoctorModel
 
 
 @Composable
-fun DetailScreen(item: DoctorModel, onBackClick: () -> Unit){
+fun DetailScreen(item: DoctorModel, onBackClick: () -> Unit, onMakeAppointmentClick: () -> Unit){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
@@ -303,7 +303,7 @@ fun DetailScreen(item: DoctorModel, onBackClick: () -> Unit){
             }
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = {},
+                onClick = { onMakeAppointmentClick() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
@@ -368,7 +368,8 @@ fun DetailScreenPreview() {
                 Address = "123 Hospital",
                 Biography = "Dr. Sabbir Hossain is a cardiologist with 10 years of experience.",
             ),
-            onBackClick = {}
+            onBackClick = {},
+            onMakeAppointmentClick = {}
         )
     }
 }

@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -54,19 +56,27 @@ import com.example.daapp.viewModel.MainViewmodel
 
 
 @Composable
-fun MainScreen(viewmodel: MainViewmodel,onDoctorClick: (DoctorModel) -> Unit={}){
+fun MainScreen(
+    viewmodel: MainViewmodel,
+    onDoctorClick: (DoctorModel) -> Unit = {},
+    onLogoutClick: () -> Unit = {}
+) {
+    // Observe the property from the ViewModel, do not call a function that recreates the LiveData
+    val doctorState by viewmodel.doctors.observeAsState()
 
-    val doctorState by viewmodel.loadDoctors().observeAsState()
-    MainScreenContent (doctors=doctorState,onDoctorClick=onDoctorClick)
-
+    MainScreenContent(
+        doctors = doctorState,
+        onDoctorClick = onDoctorClick,
+        onLogoutClick = onLogoutClick
+    )
 }
 
 @Composable
 fun MainScreenContent(
-    doctors: List<DoctorModel> ?,
-    onDoctorClick: (DoctorModel) -> Unit = {}
+    doctors: List<DoctorModel>?,
+    onDoctorClick: (DoctorModel) -> Unit = {},
+    onLogoutClick: () -> Unit = {}
 ) {
-
     var searchText by remember { mutableStateOf(value = "") }
     var selectedBottomItem by remember { mutableIntStateOf(value = 0) }
 
@@ -141,8 +151,27 @@ fun MainScreenContent(
                     }
                     Image(
                         painter = painterResource(R.drawable.bell_icon),
-                        contentDescription = null
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp)
                     )
+                    Row(
+                        modifier = Modifier.clickable { onLogoutClick() },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Logout",
+                            modifier = Modifier.size(24.dp),
+                            tint = colorResource(id = R.color.green)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Logout",
+                            color = colorResource(id = R.color.green),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -202,7 +231,7 @@ fun MainScreenContent(
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
-            if (doctors==null) {
+            if (doctors == null) {
                 item {
                     Box(
                         modifier = Modifier
@@ -319,21 +348,3 @@ fun DoctorItem(doctor: DoctorModel, onClick: () -> Unit) {
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DoctorItemPreview() {
-//    DAappTheme {
-//        DoctorItem(
-//            doctor = DoctorModel(
-//                Name = "Dr. Sabbir Hossain",
-//                Special = "Cardiologist",
-//                Rating = "4.8",
-//                Expriense = "10 Years",
-//                Cost = "$100"
-//            ),
-//            onClick = {}
-//        )
-//    }
-//}
-

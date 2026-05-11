@@ -8,7 +8,14 @@ import com.example.daapp.repository.MainRepository
 class MainViewmodel : ViewModel() {
     private val repository = MainRepository()
 
+    // Store the LiveData property so it's created only once
+    val doctors: LiveData<MutableList<DoctorModel>> = repository.load()
+
     fun loadDoctors(): LiveData<MutableList<DoctorModel>> {
-        return repository.load()
+        return doctors
+    }
+
+    fun makeAppointment(doctor: DoctorModel, onComplete: (Boolean) -> Unit) {
+        repository.makeAppointment(doctor, onComplete)
     }
 }
