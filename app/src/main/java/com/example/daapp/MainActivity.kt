@@ -10,8 +10,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.daapp.ui.theme.MainScreen
 import com.example.daapp.ui.theme.SplashScreen
+import com.example.daapp.viewModel.MainViewmodel
 
 class MainActivity : ComponentActivity() {
+    private val viewmodel = MainViewmodel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,7 +31,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable(route = "main") {
-                        MainScreen()
+                        MainScreen(
+                            viewmodel = viewmodel,
+                            onDoctorClick = {doctor ->}
+                        )
                     }
                 }
             }
