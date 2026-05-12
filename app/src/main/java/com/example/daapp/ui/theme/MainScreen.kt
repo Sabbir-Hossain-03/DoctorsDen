@@ -47,6 +47,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -79,6 +80,15 @@ fun MainScreenContent(
 ) {
     var searchText by remember { mutableStateOf(value = "") }
     var selectedBottomItem by remember { mutableIntStateOf(value = 0) }
+
+    // Filtering logic based on name, specialty, or address
+    val filteredDoctors = remember(doctors, searchText) {
+        doctors?.filter { doctor ->
+            doctor.Name.contains(searchText, ignoreCase = true) ||
+                    doctor.Special.contains(searchText, ignoreCase = true) ||
+                    doctor.Address.contains(searchText, ignoreCase = true)
+        }
+    }
 
 
     Scaffold(
@@ -231,7 +241,7 @@ fun MainScreenContent(
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
-            if (doctors == null) {
+            if (filteredDoctors == null) {
                 item {
                     Box(
                         modifier = Modifier
@@ -242,8 +252,20 @@ fun MainScreenContent(
                         CircularProgressIndicator(color = colorResource(id = R.color.green))
                     }
                 }
+            } else if (filteredDoctors.isEmpty()) {
+                item {
+                    Text(
+                        text = "No doctors found matching \"$searchText\"",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp),
+                        textAlign = TextAlign.Center,
+                        color = Color.Gray,
+                        fontSize = 16.sp
+                    )
+                }
             } else {
-                items(doctors) { doctor ->
+                items(filteredDoctors) { doctor ->
                     DoctorItem(doctor = doctor, onClick = { onDoctorClick(doctor) })
                     Spacer(modifier = Modifier.height(16.dp))
                 }

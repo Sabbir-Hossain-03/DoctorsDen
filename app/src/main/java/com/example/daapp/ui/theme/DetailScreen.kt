@@ -252,8 +252,9 @@ fun DetailScreen(item: DoctorModel, onBackClick: () -> Unit, onMakeAppointmentCl
                     iconId = R.drawable.website,
                     title = "Website",
                     onClick = {
+                        val siteUrl = if (item.Site.startsWith("http")) item.Site else "https://${item.Site}"
                         val i = Intent(Intent.ACTION_VIEW)
-                        i.setData(Uri.parse(item.Site))
+                        i.setData(Uri.parse(siteUrl))
                         context.startActivity(i)
 
 
@@ -283,7 +284,9 @@ fun DetailScreen(item: DoctorModel, onBackClick: () -> Unit, onMakeAppointmentCl
                     iconId = R.drawable.direction,
                     title = "Direction",
                     onClick = {
-                        val intent=Intent(Intent.ACTION_VIEW, Uri.parse(item.Location))
+                        // Fix: Ensure URL has a scheme to prevent crash
+                        val locationUrl = if (item.Location.startsWith("http")) item.Location else "https://${item.Location}"
+                        val intent=Intent(Intent.ACTION_VIEW, Uri.parse(locationUrl))
                         context.startActivity(intent)
 
 
